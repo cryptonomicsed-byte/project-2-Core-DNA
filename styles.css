@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
   --dna-primary: #8b5cf6;
   --dna-secondary: #ec4899;
