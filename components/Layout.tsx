@@ -30,7 +30,7 @@ const Layout: React.FC<LayoutProps> = ({ children, darkMode, toggleDarkMode }) =
           </Link>
 
           {/* Navigation */}
-          <nav className="hidden lg:flex gap-4 items-center">
+          <nav className="flex flex-wrap gap-2 lg:gap-4 items-center overflow-x-auto">
             <Link to="/extract" className={`text-sm font-medium hover:text-dna-primary transition-colors ${isActive('/extract')}`}>
                Extract DNA
             </Link>
