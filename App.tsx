@@ -14,6 +14,9 @@ import BattleModePage from './pages/BattleModePage';
 import SonicLabPage from './pages/SonicLabPage';
 import LiveSessionPage from './pages/LiveSessionPage';
 import SharedProfilePage from './pages/SharedProfilePage';
+import WorkflowsPage from './pages/WorkflowsPage';
+import AgentsPage from './pages/AgentsPage';
+import FlowsPage from './pages/FlowsPage';
 
 const App: React.FC = () => {
   const [darkMode, setDarkMode] = useState(true);
@@ -50,6 +53,9 @@ const App: React.FC = () => {
                     <Route path="/settings" element={<SettingsPage />} />
                     <Route path="/battle" element={<BattleModePage />} />
                     <Route path="/sonic" element={<SonicLabPage />} />
+                    <Route path="/workflows" element={<WorkflowsPage />} />
+                    <Route path="/agents" element={<AgentsPage />} />
+                    <Route path="/flows" element={<FlowsPage />} />
                     <Route path="*" element={<Navigate to="/" replace />} />
                   </Routes>
                 </Layout>

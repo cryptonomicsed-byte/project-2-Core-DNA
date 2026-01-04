@@ -30,21 +30,37 @@ const Layout: React.FC<LayoutProps> = ({ children, darkMode, toggleDarkMode }) =
           </Link>
 
           {/* Navigation */}
-          <nav className="hidden lg:flex gap-6 items-center">
+          <nav className="hidden lg:flex gap-4 items-center">
             <Link to="/extract" className={`text-sm font-medium hover:text-dna-primary transition-colors ${isActive('/extract')}`}>
                Extract DNA
             </Link>
             <Link to="/dashboard" className={`text-sm font-medium hover:text-dna-primary transition-colors ${isActive('/dashboard')}`}>
                Dashboard
             </Link>
-             <Link to="/battle" className={`text-sm font-medium hover:text-dna-primary transition-colors flex items-center gap-1 ${isActive('/battle')}`}>
+            <Link to="/campaigns" className={`text-sm font-medium hover:text-dna-primary transition-colors ${isActive('/campaigns')}`}>
+               Campaigns
+            </Link>
+
+            {/* AI Agency Section */}
+            <div className="h-6 w-px bg-gray-300 dark:bg-gray-700 mx-1" />
+
+            <Link to="/workflows" className={`text-sm font-medium hover:text-dna-primary transition-colors flex items-center gap-1 ${isActive('/workflows')}`}>
+               <span>⚙️</span> Automations
+            </Link>
+            <Link to="/agents" className={`text-sm font-medium hover:text-dna-primary transition-colors flex items-center gap-1 ${isActive('/agents')}`}>
+               <span>🤖</span> AI Agents
+            </Link>
+            <Link to="/flows" className={`text-sm font-medium hover:text-dna-primary transition-colors flex items-center gap-1 ${isActive('/flows')}`}>
+               <span>🔀</span> Flows
+            </Link>
+
+            <div className="h-6 w-px bg-gray-300 dark:bg-gray-700 mx-1" />
+
+            <Link to="/battle" className={`text-sm font-medium hover:text-dna-primary transition-colors flex items-center gap-1 ${isActive('/battle')}`}>
                <span>⚔️</span> Battle
             </Link>
             <Link to="/sonic" className={`text-sm font-medium hover:text-dna-primary transition-colors flex items-center gap-1 ${isActive('/sonic')}`}>
                <span>🔊</span> Sonic
-            </Link>
-            <Link to="/campaigns" className={`text-sm font-medium hover:text-dna-primary transition-colors ${isActive('/campaigns')}`}>
-               Campaigns
             </Link>
             <Link to="/agent-forge" className={`text-sm font-medium hover:text-dna-primary transition-colors ${isActive('/agent-forge')}`}>
                Agent Forge

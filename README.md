@@ -1,20 +1,342 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Core DNA AI Agency Platform
 
-# Run and deploy your AI Studio app
+A self-hosted, unified platform for AI-powered brand intelligence, automation, and agent orchestration. Merges the best of **n8n** (workflows), **CrewAI** (agent swarms), and **Langflow** (visual AI logic) into one seamless interface.
 
-This contains everything you need to run your app locally.
+## What It Does
 
-View your app in AI Studio: https://ai.studio/apps/drive/1oK7GGLdvV3E15WgVsDL3I3M486CfJT2u
+- **Extract Brand DNA** → Analyze websites with Gemini, extract brand identity, colors, fonts, messaging
+- **Automate Workflows** → n8n embedded workflows for email, PDFs, social posting
+- **Run AI Agent Swarms** → CrewAI-powered teams (Researcher, Writer, Closer) for lead outreach
+- **Build Visual Flows** → Langflow drag-and-drop flows for complex AI logic
+- **Unified Dashboard** → All features under one Core DNA-branded interface
 
-## Run Locally
+## Features
 
-**Prerequisites:**  Node.js
+### 1. **Automations (n8n Embedded)**
+Pre-configured workflows:
+- Extract DNA from URL → Calls Gemini
+- Send Closer Report → Generate PDF, email via Resend/Gmail
+- Auto-Post Scheduler → Push to Twitter, Facebook, Instagram
 
+### 2. **AI Agents (CrewAI)**
+Closer Swarm with 3 roles:
+- **Researcher**: Scrape lead site, identify pain points
+- **Writer**: Draft personalized outreach email
+- **Closer**: Refine email, add urgency, pricing, CTA
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+Store conversation logs locally (mock Firestore) or in Firestore.
+
+### 3. **Flows (Langflow)**
+Two pre-built templates:
+- **Brand DNA → Campaign Generator** → DNA → posts + visuals
+- **Review → Social Graphic** → Scrape review → AI image → post
+
+Duplicate, edit, export—all in-app.
+
+### 4. **UI/UX**
+- **New sidebar** with Automations, AI Agents, Flows (separated by dividers)
+- **Keep existing features** (Extract DNA, Dashboard, Campaigns, Battle, Sonic, Agent Forge)
+- **Freemium**: Lock new features behind Pro/Agency tiers
+- **Dark mode** by default
+
+## Quick Start
+
+### Prerequisites
+- Node.js 18+
+- npm or pnpm
+
+### Installation
+
+1. **Clone & Install**
+   ```bash
+   git clone https://github.com/jbino85/CoreDNA.git
+   cd CoreDNA
+   npm install
+   ```
+
+2. **Set Environment Variables**
+   ```bash
+   cp .env.example .env.local
+   # Edit .env.local with your API keys:
+   # - GEMINI_API_KEY
+   # - OPENAI_API_KEY (for CrewAI)
+   # - RESEND_API_KEY or GMAIL credentials
+   # - TWITTER_API_KEY, META_APP_ID, etc.
+   ```
+
+3. **Run Frontend**
+   ```bash
+   npm run dev
+   ```
+   Opens at `http://localhost:5173`
+
+4. **Run Backend** (in a separate terminal)
+   ```bash
+   npx tsx server.ts
+   ```
+   Backend runs at `http://localhost:3001`
+
+5. **Test Health Check**
+   ```bash
+   curl http://localhost:3001/api/health
+   ```
+
+## Architecture
+
+```
+Core DNA Platform
+├── Frontend (React + Vite)
+│   ├── Pages
+│   │   ├── ExtractPage (existing)
+│   │   ├── DashboardPage (existing)
+│   │   ├── WorkflowsPage (NEW - n8n)
+│   │   ├── AgentsPage (NEW - CrewAI)
+│   │   └── FlowsPage (NEW - Langflow)
+│   └── Services
+│       ├── n8nService.ts
+│       ├── crewaiService.ts
+│       └── langflowService.ts
+├── Backend (Express)
+│   ├── POST /api/agents/closer-swarm/execute
+│   ├── POST /api/workflows/:workflowId/execute
+│   ├── POST /api/flows/:flowId/execute
+│   └── GET /api/health
+└── Storage
+    ├── localStorage (flows, conversations)
+    ├── Firestore (optional - conversations)
+    └── Qdrant (existing - semantic search)
+```
+
+## API Endpoints
+
+### Health
+- `GET /api/health` → Server status
+
+### CrewAI Agents
+- `POST /api/agents/closer-swarm/execute` → Run sales swarm
+- `POST /api/agents/conversations` → Log conversation
+- `GET /api/agents/executions/:executionId` → Get swarm status
+
+### n8n Workflows
+- `POST /api/workflows/:workflowId/execute` → Run workflow
+- `GET /api/executions/:executionId` → Get workflow status
+
+### Langflow Flows
+- `POST /api/flows/:flowId/execute` → Run flow
+
+## Environment Setup
+
+See `.env.example` for full list. Key variables:
+
+```env
+# Frontend
+VITE_API_BASE_URL=http://localhost:3001
+
+# AI Providers
+GEMINI_API_KEY=...
+OPENAI_API_KEY=...
+
+# Automation
+N8N_BASE_URL=http://localhost:5678
+N8N_API_KEY=...
+
+# Agents
+CREWAI_MODEL=gpt-4-turbo
+
+# Flows
+LANGFLOW_BASE_URL=http://localhost:7860
+
+# Email
+RESEND_API_KEY=...
+
+# Social Media
+TWITTER_API_KEY=...
+META_APP_ID=...
+```
+
+## Deployment
+
+### Fly.io (Recommended)
+
+1. **Install Fly CLI**
+   ```bash
+   curl -L https://fly.io/install.sh | sh
+   ```
+
+2. **Create Fly App**
+   ```bash
+   fly auth login
+   fly launch
+   ```
+
+3. **Set Secrets**
+   ```bash
+   fly secrets set GEMINI_API_KEY=xxx
+   fly secrets set OPENAI_API_KEY=xxx
+   # ... set all variables from .env.example
+   ```
+
+4. **Deploy**
+   ```bash
+   fly deploy
+   ```
+
+### Vercel (Frontend only)
+
+1. Push to GitHub
+2. Connect to Vercel
+3. Set environment variables in Vercel dashboard
+4. Deploy
+
+Backend should run on Fly.io or another server.
+
+## Project Structure
+
+```
+CoreDNA/
+├── pages/
+│   ├── ExtractPage.tsx
+│   ├── DashboardPage.tsx
+│   ├── WorkflowsPage.tsx (NEW)
+│   ├── AgentsPage.tsx (NEW)
+│   ├── FlowsPage.tsx (NEW)
+│   └── services/
+│       ├── geminiService.ts
+│       ├── n8nService.ts (NEW)
+│       ├── crewaiService.ts (NEW)
+│       └── langflowService.ts (NEW)
+├── components/
+│   └── Layout.tsx (updated with new nav)
+├── contexts/
+│   └── AuthContext.tsx
+├── App.tsx (updated with new routes)
+├── server.ts (NEW)
+├── .env.example (NEW)
+└── package.json (updated deps)
+```
+
+## Development
+
+### Add a New Workflow Node
+Edit `pages/services/n8nService.ts` → `PRE_CONFIGURED_NODES`:
+```typescript
+const PRE_CONFIGURED_NODES = {
+  yourNode: {
+    id: 'your-node',
+    type: 'http.request',
+    name: 'Your Node Name',
+    config: { /* ... */ }
+  }
+};
+```
+
+### Add a New Agent Role
+Edit `pages/services/crewaiService.ts` → `CLOSER_SWARM.agents`:
+```typescript
+{
+  role: 'your_role',
+  model: 'gpt-4-turbo',
+  systemPrompt: 'Your system prompt...',
+  temperature: 0.5,
+  maxTokens: 2000
+}
+```
+
+### Add a New Flow Template
+Edit `pages/services/langflowService.ts` → `FLOW_TEMPLATES`:
+```typescript
+yourFlow: {
+  id: 'flow-your-flow',
+  name: 'Your Flow Name',
+  nodes: [ /* ... */ ],
+  connections: [ /* ... */ ]
+}
+```
+
+## Feature Flags
+
+Control which features are available by tier:
+
+```env
+UNLOCK_AUTOMATIONS_TIER=pro      # n8n workflows
+UNLOCK_AGENTS_TIER=pro          # CrewAI swarms
+UNLOCK_FLOWS_TIER=agency        # Langflow flows
+```
+
+## Troubleshooting
+
+### Backend won't start
+```bash
+# Check if port 3001 is in use
+lsof -i :3001
+# Kill process if needed
+kill -9 <PID>
+```
+
+### Frontend can't reach backend
+```bash
+# Ensure VITE_API_BASE_URL is correct
+echo $VITE_API_BASE_URL
+# Default: http://localhost:3001
+```
+
+### Workflow execution fails
+```bash
+# Check n8n is running
+curl http://localhost:5678/api/v1/health
+# Verify N8N_API_KEY is valid
+```
+
+## Performance & Scaling
+
+- **Workflows**: Direct n8n API calls (scales with n8n)
+- **Agents**: Queue-based execution (add Bull/RabbitMQ for production)
+- **Flows**: Async with WebSocket updates (optional)
+- **Storage**: localStorage → Firestore/PostgreSQL
+
+## Security
+
+- [ ] Add JWT authentication to backend
+- [ ] Hash sensitive config in .env
+- [ ] Rate limit API endpoints
+- [ ] CORS whitelist in production
+- [ ] Encrypt conversation logs
+
+## Roadmap
+
+- [ ] Real-time flow visualization editor
+- [ ] Advanced agent prompt customization
+- [ ] Multi-user workspace support
+- [ ] Workflow version control
+- [ ] Integration marketplace
+- [ ] Advanced analytics & reporting
+
+## Contributing
+
+1. Fork the repo
+2. Create a feature branch: `git checkout -b feature/your-feature`
+3. Commit: `git commit -m 'Add feature'`
+4. Push: `git push origin feature/your-feature`
+5. Open a PR
+
+## License
+
+MIT
+
+## Support
+
+- GitHub Issues: Report bugs
+- Docs: [in-repo DEPLOYMENT.md]
+- Discord: [join community]
+
+---
+
+**Built with:**
+- React + Vite
+- n8n (workflow automation)
+- CrewAI (agent orchestration)
+- Langflow (visual AI)
+- Express (backend)
+- Tailwind CSS (styling)
+
+**Deploy now:** `npm run build && fly deploy`
