@@ -8,6 +8,7 @@ A self-hosted, unified platform for AI-powered brand intelligence, automation, a
 - **Automate Workflows** → n8n embedded workflows for email, PDFs, social posting
 - **Run AI Agent Swarms** → CrewAI-powered teams (Researcher, Writer, Closer) for lead outreach
 - **Build Visual Flows** → Langflow drag-and-drop flows for complex AI logic
+- **RLM Mode (♾️)** → Recursive Language Model for infinite context processing on long-form content
 - **Unified Dashboard** → All features under one Core DNA-branded interface
 
 ## Features
@@ -33,10 +34,23 @@ Two pre-built templates:
 
 Duplicate, edit, export—all in-app.
 
-### 4. **UI/UX**
-- **New sidebar** with Automations, AI Agents, Flows (separated by dividers)
+### 4. **RLM Mode (Pro/Hunter Only)**
+Recursive Language Model processing for unbounded context:
+- **Smart Chunking**: Intelligently splits large content into manageable chunks with configurable overlap
+- **Recursive Processing**: Each chunk processed independently, then synthesized into coherent results
+- **Context Preservation**: Overlap between chunks maintains narrative flow and semantic continuity
+- **Multi-Model Support**: Use different models for root and recursive processing
+- **Configurable**: Adjust chunk size, overlap %, and max tokens per chunk
+- **Unlocked Features**:
+  - Extract DNA: Full website crawl with infinite context
+  - Battle Mode: Deep competitive analysis across large datasets
+  - Closer Agent: Complete conversation history analysis
+
+### 5. **UI/UX**
+- **New sidebar** with Automations, AI Agents, Flows, RLM Settings (separated by dividers)
 - **Keep existing features** (Extract DNA, Dashboard, Campaigns, Battle, Sonic, Agent Forge)
-- **Freemium**: Lock new features behind Pro/Agency tiers
+- **Freemium**: Lock RLM behind Pro/Agency tiers
+- **RLM Indicator**: Visual badge shows "RLM Active" with chunk processing progress
 - **Dark mode** by default
 
 ## Quick Start
@@ -310,6 +324,47 @@ curl http://localhost:5678/api/v1/health
 - [ ] Workflow version control
 - [ ] Integration marketplace
 - [ ] Advanced analytics & reporting
+- [x] RLM Mode for infinite context processing (v1 - basic implementation)
+- [ ] RLM streaming responses
+- [ ] RLM cost estimation before processing
+- [ ] RLM result caching and versioning
+
+## RLM Configuration
+
+### Enabling RLM Mode
+
+1. Navigate to **Settings** → **RLM Mode** tab
+2. Toggle **RLM Mode (Infinite Context)** ON
+3. Configure:
+   - **Root Model**: LLM for initial context decomposition
+   - **Recursive Model**: LLM for chunk processing and synthesis
+   - **Chunk Size (KB)**: 256-2048 KB (default: 512)
+   - **Context Overlap (%)**: 0-50% (default: 10%)
+   - **Max Tokens/Chunk**: 2000-32000 (default: 8000)
+
+### How RLM Works
+
+1. **Chunking**: Content is split into overlapping chunks (overlap maintains narrative flow)
+2. **Recursive Processing**: Each chunk is analyzed independently using the recursive model
+3. **Synthesis**: Results from all chunks are combined into a coherent, unified output
+4. **Context Preservation**: Overlap between chunks prevents information loss at boundaries
+
+### Best Practices
+
+- **Chunk Size**: Larger chunks = fewer API calls but higher latency. Start with 512 KB.
+- **Overlap**: 10-15% overlap is usually sufficient. Higher overlap = higher cost.
+- **Token Budget**: Higher tokens improve quality but increase cost. Budget accordingly.
+- **Model Selection**: Use faster/cheaper models for chunking, quality models for synthesis.
+
+### Example Use Case
+
+**Task**: Extract brand DNA from a 50-page website
+
+1. Website content: ~500 KB
+2. Split into 5 overlapping chunks of 512 KB each
+3. Each chunk processed by Claude → 5 API calls
+4. Results synthesized into single, coherent DNA report
+5. **Benefit**: Process entire site without context window limitations
 
 ## Contributing
 

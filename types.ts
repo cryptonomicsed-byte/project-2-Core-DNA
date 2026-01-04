@@ -277,6 +277,15 @@ export interface WorkflowConfig {
   postingWebhookUrl?: string; // Specific for immediate posting
 }
 
+export interface RLMSettings {
+  enabled: boolean; // RLM Mode active
+  rootModel: LLMProviderId; // Root model for recursive processing
+  recursiveModel: LLMProviderId; // Recursive model (can be different)
+  chunkSizeKB: number; // Size of chunks (512 KB default)
+  overlapPercentage: number; // Context overlap (10% default)
+  maxTokens: number; // Max tokens per chunk
+}
+
 export interface GlobalSettings {
   activeLLM: LLMProviderId; // Which one to actually use for generation
   activeImageGen: ImageProviderId; // Which one to use for images
@@ -286,6 +295,7 @@ export interface GlobalSettings {
   image: Record<string, ImageConfig>;
   voice: Record<string, VoiceConfig>;
   workflows: Record<string, WorkflowConfig>;
+  rlm: RLMSettings; // RLM configuration
   theme: 'system' | 'light' | 'dark';
   dataCollection: boolean;
 }

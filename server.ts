@@ -187,6 +187,78 @@ app.post('/api/flows/:flowId/execute', async (req: Request, res: Response) => {
 });
 
 // ============================================================================
+// RLM (Recursive Language Model) Endpoints
+// ============================================================================
+
+/**
+ * Process content with RLM
+ * POST /api/llm/process
+ */
+app.post('/api/llm/process', async (req: Request, res: Response) => {
+  try {
+    const { provider, model, systemPrompt, userPrompt, taskType, maxTokens, temperature } = req.body;
+
+    if (!provider || !model) {
+      return res.status(400).json({ error: 'Missing required fields: provider, model' });
+    }
+
+    // Mock implementation - in production, integrate with actual LLM providers
+    console.log(`[RLM LLM] Processing with ${provider}/${model}`);
+
+    // Simulate API call
+    const mockResponse = `
+    Analysis Complete (${provider}/${model}):
+    
+    Task Type: ${taskType}
+    Content Length: ${userPrompt.length} characters
+    System Context: ${systemPrompt.substring(0, 100)}...
+    
+    Key Findings:
+    - Primary insight generated
+    - Secondary patterns identified
+    - Synthesis completed
+    
+    Token Usage: ~${Math.ceil(userPrompt.length / 4)} tokens (estimated)
+    Processing Time: 2.3s
+    `;
+
+    res.json({
+      status: 'success',
+      result: mockResponse.trim(),
+      tokensUsed: Math.ceil(userPrompt.length / 4),
+      model,
+      provider
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: 'LLM processing failed',
+      message: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
+/**
+ * Get RLM processing status
+ * GET /api/rlm/status/:executionId
+ */
+app.get('/api/rlm/status/:executionId', (req: Request, res: Response) => {
+  const { executionId } = req.params;
+
+  // Mock response
+  res.json({
+    id: executionId,
+    status: 'processing',
+    progress: {
+      currentChunk: 3,
+      totalChunks: 8,
+      percentComplete: 37.5
+    },
+    estimatedTimeRemaining: '45 seconds',
+    tokensUsedSoFar: 12450
+  });
+});
+
+// ============================================================================
 // Error Handler
 // ============================================================================
 app.use((err: any, req: Request, res: Response, next: any) => {

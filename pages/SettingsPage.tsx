@@ -11,6 +11,14 @@ const INITIAL_SETTINGS: GlobalSettings = {
     activeImageGen: 'google',
     activeVoice: 'openai',
     activeWorkflow: 'n8n',
+    rlm: {
+        enabled: false,
+        rootModel: 'google',
+        recursiveModel: 'google',
+        chunkSizeKB: 512,
+        overlapPercentage: 10,
+        maxTokens: 8000,
+    },
     llms: {
         google: { provider: 'google', enabled: true, apiKey: process.env.API_KEY || '' },
         openai: { provider: 'openai', enabled: false, apiKey: '', defaultModel: 'gpt-4o' },
@@ -183,7 +191,7 @@ const PROVIDER_META: Record<string, { title: string, icon: string, fields: strin
 
 const SettingsPage: React.FC = () => {
     const navigate = useNavigate();
-    const [activeTab, setActiveTab] = useState<'llm' | 'image' | 'voice' | 'workflow'>('llm');
+    const [activeTab, setActiveTab] = useState<'llm' | 'image' | 'voice' | 'workflow' | 'rlm'>('llm');
     const [settings, setSettings] = useState<GlobalSettings>(INITIAL_SETTINGS);
     const [hasChanges, setHasChanges] = useState(false);
 
@@ -324,6 +332,7 @@ const SettingsPage: React.FC = () => {
                     <TabButton id="image" label="Image Generators" icon={<span>🎨</span>} />
                     <TabButton id="voice" label="Voice / TTS" icon={<span>🔊</span>} />
                     <TabButton id="workflow" label="Automations" icon={<span>⚡</span>} />
+                    <TabButton id="rlm" label="RLM Mode" icon={<span>♾️</span>} />
                 </div>
 
                 <div className="p-8 bg-gray-50/50 dark:bg-black/20 min-h-[600px]">
@@ -465,6 +474,132 @@ const SettingsPage: React.FC = () => {
                                             onToggle={() => updateProvider('workflows', key, { enabled: !settings.workflows[key].enabled })}
                                         />
                                     ))}
+                                </div>
+                            </motion.div>
+                        )}
+
+                        {activeTab === 'rlm' && (
+                            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                                <div className="mb-6 p-4 bg-indigo-50 dark:bg-indigo-900/10 border border-indigo-200 dark:border-indigo-800 rounded-xl">
+                                    <div className="flex justify-between items-start mb-4">
+                                        <div>
+                                            <h3 className="font-bold text-indigo-800 dark:text-indigo-400 flex items-center gap-2">
+                                                ♾️ RLM Mode (Infinite Context)
+                                            </h3>
+                                            <p className="text-sm text-indigo-700 dark:text-indigo-500 mt-1">Recursive Language Model for processing unbounded content through intelligent chunking and synthesis.</p>
+                                            <p className="text-xs text-indigo-600 dark:text-indigo-400 mt-2">Available for Pro & Hunter tiers</p>
+                                        </div>
+                                        <button 
+                                            onClick={() => {
+                                                setSettings(prev => ({...prev, rlm: {...prev.rlm, enabled: !prev.rlm.enabled}}));
+                                                setHasChanges(true);
+                                            }}
+                                            className={`w-14 h-8 rounded-full relative transition-colors flex-shrink-0 ${settings.rlm.enabled ? 'bg-indigo-500' : 'bg-gray-300 dark:bg-gray-700'}`}
+                                        >
+                                            <div className={`absolute top-1 left-1 bg-white w-6 h-6 rounded-full transition-transform ${settings.rlm.enabled ? 'translate-x-6' : ''}`} />
+                                        </button>
+                                    </div>
+
+                                    {settings.rlm.enabled && (
+                                        <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="space-y-4 pt-4 border-t border-indigo-200 dark:border-indigo-800">
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                <div>
+                                                    <label className="block text-xs font-bold text-indigo-700 dark:text-indigo-400 uppercase mb-2">Root Model</label>
+                                                    <select 
+                                                        value={settings.rlm.rootModel}
+                                                        onChange={(e) => {
+                                                            setSettings(prev => ({...prev, rlm: {...prev.rlm, rootModel: e.target.value as any}}));
+                                                            setHasChanges(true);
+                                                        }}
+                                                        className="w-full p-2 rounded-lg bg-white dark:bg-gray-900 border border-indigo-300 dark:border-indigo-700 font-bold text-sm"
+                                                    >
+                                                        {Object.keys(settings.llms).map(k => (
+                                                            <option key={k} value={k}>{PROVIDER_META[k]?.title || k}</option>
+                                                        ))}
+                                                    </select>
+                                                    <p className="text-xs text-indigo-600 dark:text-indigo-400 mt-1">For initial context decomposition</p>
+                                                </div>
+
+                                                <div>
+                                                    <label className="block text-xs font-bold text-indigo-700 dark:text-indigo-400 uppercase mb-2">Recursive Model</label>
+                                                    <select 
+                                                        value={settings.rlm.recursiveModel}
+                                                        onChange={(e) => {
+                                                            setSettings(prev => ({...prev, rlm: {...prev.rlm, recursiveModel: e.target.value as any}}));
+                                                            setHasChanges(true);
+                                                        }}
+                                                        className="w-full p-2 rounded-lg bg-white dark:bg-gray-900 border border-indigo-300 dark:border-indigo-700 font-bold text-sm"
+                                                    >
+                                                        {Object.keys(settings.llms).map(k => (
+                                                            <option key={k} value={k}>{PROVIDER_META[k]?.title || k}</option>
+                                                        ))}
+                                                    </select>
+                                                    <p className="text-xs text-indigo-600 dark:text-indigo-400 mt-1">For chunk processing and synthesis</p>
+                                                </div>
+
+                                                <div>
+                                                    <label className="block text-xs font-bold text-indigo-700 dark:text-indigo-400 uppercase mb-2">Chunk Size (KB)</label>
+                                                    <input 
+                                                        type="number"
+                                                        value={settings.rlm.chunkSizeKB}
+                                                        onChange={(e) => {
+                                                            setSettings(prev => ({...prev, rlm: {...prev.rlm, chunkSizeKB: parseInt(e.target.value) || 512}}));
+                                                            setHasChanges(true);
+                                                        }}
+                                                        min="256"
+                                                        max="2048"
+                                                        step="256"
+                                                        className="w-full p-2 rounded-lg bg-white dark:bg-gray-900 border border-indigo-300 dark:border-indigo-700 font-mono text-sm"
+                                                    />
+                                                    <p className="text-xs text-indigo-600 dark:text-indigo-400 mt-1">Larger = fewer chunks, faster</p>
+                                                </div>
+
+                                                <div>
+                                                    <label className="block text-xs font-bold text-indigo-700 dark:text-indigo-400 uppercase mb-2">Context Overlap (%)</label>
+                                                    <input 
+                                                        type="number"
+                                                        value={settings.rlm.overlapPercentage}
+                                                        onChange={(e) => {
+                                                            setSettings(prev => ({...prev, rlm: {...prev.rlm, overlapPercentage: parseInt(e.target.value) || 10}}));
+                                                            setHasChanges(true);
+                                                        }}
+                                                        min="0"
+                                                        max="50"
+                                                        step="5"
+                                                        className="w-full p-2 rounded-lg bg-white dark:bg-gray-900 border border-indigo-300 dark:border-indigo-700 font-mono text-sm"
+                                                    />
+                                                    <p className="text-xs text-indigo-600 dark:text-indigo-400 mt-1">Overlap maintains narrative flow</p>
+                                                </div>
+
+                                                <div className="md:col-span-2">
+                                                    <label className="block text-xs font-bold text-indigo-700 dark:text-indigo-400 uppercase mb-2">Max Tokens per Chunk</label>
+                                                    <input 
+                                                        type="number"
+                                                        value={settings.rlm.maxTokens}
+                                                        onChange={(e) => {
+                                                            setSettings(prev => ({...prev, rlm: {...prev.rlm, maxTokens: parseInt(e.target.value) || 8000}}));
+                                                            setHasChanges(true);
+                                                        }}
+                                                        min="2000"
+                                                        max="32000"
+                                                        step="1000"
+                                                        className="w-full p-2 rounded-lg bg-white dark:bg-gray-900 border border-indigo-300 dark:border-indigo-700 font-mono text-sm"
+                                                    />
+                                                    <p className="text-xs text-indigo-600 dark:text-indigo-400 mt-1">Higher = better quality, higher cost</p>
+                                                </div>
+                                            </div>
+                                        </motion.div>
+                                    )}
+                                </div>
+
+                                <div className="p-4 bg-indigo-100 dark:bg-indigo-900/30 border border-indigo-300 dark:border-indigo-700 rounded-xl">
+                                    <h4 className="font-bold text-indigo-900 dark:text-indigo-200 mb-2">✨ Features Unlocked</h4>
+                                    <ul className="space-y-1 text-sm text-indigo-800 dark:text-indigo-300">
+                                        <li>✓ Extract DNA: Full website crawl with infinite context</li>
+                                        <li>✓ Battle Mode: Deep competitive analysis across large datasets</li>
+                                        <li>✓ Closer Agent: Complete conversation history analysis</li>
+                                        <li>✓ 10x longer context without losing quality</li>
+                                    </ul>
                                 </div>
                             </motion.div>
                         )}
