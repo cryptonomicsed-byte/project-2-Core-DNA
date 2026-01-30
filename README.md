@@ -1,5 +1,7 @@
 # Core DNA AI Agency Platform
 
+A comprehensive SaaS platform that uses AI to analyze brand identity, generate unlimited marketing assets, build websites, find sales leads, and automate marketing workflows through voice commands and API integrations.
+
 A self-hosted, unified platform for AI-powered brand intelligence, automation, and agent orchestration. Merges the best of **n8n** (workflows), **CrewAI** (agent swarms), and **Langflow** (visual AI logic) into one seamless interface.
 
 ## What It Does
@@ -10,6 +12,55 @@ A self-hosted, unified platform for AI-powered brand intelligence, automation, a
 - **Build Visual Flows** → Langflow drag-and-drop flows for complex AI logic
 - **RLM Mode (♾️)** → Recursive Language Model for infinite context processing on long-form content
 - **Unified Dashboard** → All features under one Core DNA-branded interface
+
+## 🎯 17 Core Features
+
+| # | Feature | Purpose | Tier |
+|---|---------|---------|------|
+| 1 | Brand DNA Extraction | Extract comprehensive brand analysis from URLs | All |
+| 2 | Campaign Generation | Generate marketing assets for multiple channels | Pro+ |
+| 3 | Website Builder | Instant website generation & deployment | Pro+ |
+| 4 | Sonic Co-Pilot | Voice AI assistant for all features | Hunter+ |
+| 5 | Lead Hunter | Find leads with contact info & analysis | Pro+ |
+| 6 | Battle Mode | Compare 2 brands head-to-head | Pro+ |
+| 7 | Brand Simulator | Test marketing scenario variations | Pro+ |
+| 8 | Scheduler | Schedule posts across channels | Pro+ |
+| 9 | Automations | n8n-powered workflow automation | Hunter+ |
+| 10 | Agent Forge | Create custom AI agents | Hunter+ |
+| 11 | Affiliate Hub | Manage referral programs | Pro+ |
+| 12 | Live Sessions | Real-time collaboration mode | Hunter+ |
+| 13 | Sonic Lab | Audio/voice experiments | Hunter+ |
+| 14 | Settings | 70+ AI provider API key management | All |
+| 15 | Dashboard | Portfolio + trend analytics | All |
+| 16 | Shared Profiles | Public read-only brand sharing | Pro+ |
+| 17 | Trend Pulse | Real-time relevant trends (auto-campaign) | Pro+ |
+
+## 💰 Pricing Tiers
+
+- **Free**: $0 (3 extractions/month)
+- **Pro**: $49/mo (unlimited, all providers)
+- **Hunter**: $149/mo (Pro + Sonic voice + automations)
+- **Agency**: Custom (white-label, team seats, dedicated support)
+
+## 🔌 AI Provider Integrations
+
+- **70+ LLM Providers**: OpenAI, Claude, Gemini, Mistral, Groq, DeepSeek, XAI, and more
+- **20+ Image Providers**: DALL-E, Stable Diffusion, Midjourney, Flux, and more
+- **15+ Voice/TTS**: ElevenLabs, OpenAI, PlayHT, Cartesia, and more
+- **20+ Video Providers**: Sora 2, Veo 3, Runway, Kling, Luma, and more
+- **Workflow Automation**: n8n, Zapier, Make
+
+## 🏗️ Tech Stack
+
+- **Frontend**: React 19 + TypeScript + Vite + Tailwind
+- **Backend**: Supabase (PostgreSQL) + REST APIs
+- **Storage**: LocalStorage + Supabase
+- **Auth**: Supabase Auth (Google/Email)
+- **Key Libraries**: Framer Motion, Recharts, React Router
+
+## 🔑 Unique Feature: BYOK (Bring Your Own Keys)
+
+Users provide their own API keys → stored only in browser → unlimited scaling at their cost → no vendor lock-in
 
 ## Features
 
